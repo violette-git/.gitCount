@@ -19,3 +19,12 @@ secrets.py
 secrets.py/
 foodtruck.help_key2.txt
 foodtruck.help.crt
+__pycache__
+__pycache__/
+/__pycache__
+.__pycache__
+.pyc
+ds_store
+.ds_store
+ds_store/
+/ds_store

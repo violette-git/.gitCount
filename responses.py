@@ -33,8 +33,10 @@ student_list = []
 def get_response(message: str, user_message:str) -> str | str:
 
     embeds = message.embeds
+    # print(embeds)
+    # print(dir(embeds))
     for embed in embeds:        
-       
+        # print(embed)
         title = embed.title
       
         n = 1
@@ -48,31 +50,45 @@ def get_response(message: str, user_message:str) -> str | str:
         before = groups[0]
 
         title = groups[1]
-
+        print(title)
         author = embed.author.name
 
-        if author not in student_list:
+        
+        if len(student_list) == 0:
 
-            author = Student(author)
+            student = Student(author)
 
-            student_list.append(author)
+            student_list.append(student)
+
+        for s in student_list:
+
+            if author != s.name:
+
+                student = Student(author)
+
+                student_list.append(student)
+                
+                # print(s.)
             
-            return f'{author.name} was added to the list of students'
-
-        else: 
-            pass
-
-            author = author
+                return f'{s.name} was added to the list of students'
+            
 
         if title.startswith('New comment on pull request '):
 
-            t = dt.datetime.now()
-            
-            if author in student_list:
+            if author:
 
-                author.parse_comments(before)
+                t = dt.datetime.now()
+
+                for s in student_list:
+
+                    if author == s.name:
+
+                        s.parse_comments(before)
             
-                return f'{t}'
+                        print(s.comment)
+            return f'{s.name}: {t.day} {t.month} {t.year}'
+            
+            #     return f'{t}'
 
         if title.startswith('Pull request opened:'):
 
@@ -81,6 +97,12 @@ def get_response(message: str, user_message:str) -> str | str:
             return pull
 
         if title.startswith('1 new commit:'):
+            
+            if author:
+
+                t = dt.datetime.now()
+
+                
 
             pull = 'pull added' 
 
