@@ -1,69 +1,110 @@
 import bot
-student_dictionary = {
+import sched
+import datetime as dt
 
-    'name': {
-        'commit_count':0,
-        'push_count':0
-    }
+class Student:
 
-}
+    def __init__(self, name):
 
-# print(student_dictionary['name']['commit_count'])
+        self.name = name
+        self.comment = 0
+        self.commit = 0
+        self.pull = 0
+    
+    def parse_comments(self, comment):
+
+        self.comment = comment
+    
+    def parse_pulls(self, pull):
+
+        self.pull = pull
+
+    def parse_commits(self, commit):
+
+        self.commit = commit
+
+    def __str__(self):
+
+        return f'{self.name}'
 
 
-def count():
 
-
-    # grab all incoming messages from current day
-
-    # split between push and commits
-
-    # parse message text
-
-    # save users into user list  or variable?
-
-    # return list of variables
-    # return counted_commit, counted_push
-    pass
-
-
-def get_response(message: object, user_message:str) -> object | str:
+student_list = []
+def get_response(message: str, user_message:str) -> str | str:
 
     embeds = message.embeds
-    # print(f"'embeds': {dir(embeds)}")
+    for embed in embeds:        
+       
+        title = embed.title
+      
+        n = 1
 
-    
-    print(user_message)
+        groups = title.split('] ')
 
+        ' '.join(groups[:n])
+        
+        ' '.join(groups[n:])
 
-    if type(user_message) == str:
-        pass
-    
-    if user_message == 'git push count':
+        before = groups[0]
 
-        push = 'push got'
-
-        return push
-
-    # if type(embeds) == object:
-    for embed in embeds:
+        title = groups[1]
 
         author = embed.author.name
 
-        title = embed.title
+        if author not in student_list:
 
-        print(f'{title}\n{author}')
+            author = Student(author)
 
-        if title.startswith('[PdxCodeGuild/HB3] Pull request opened:'):
+            student_list.append(author)
+            
+            return f'{author.name} was added to the list of students'
+
+        else: 
+            pass
+
+            author = author
+
+        if title.startswith('New comment on pull request '):
+
+            t = dt.datetime.now()
+            
+            if author in student_list:
+
+                author.parse_comments(before)
+            
+                return f'{t}'
+
+        if title.startswith('Pull request opened:'):
 
             pull = 'pull added' 
 
             return pull
 
+        if title.startswith('1 new commit:'):
 
-        if title.startswith('[PdxCodeGuild/HB3] New comment on pull request'):
+            pull = 'pull added' 
 
-            return '`This is an editable message`'
+            return pull    
     
+    if user_message.lower() == 'git push count':
 
-    return f'invalid command'
+        push = 'push got'
+
+        return push
+
+    if user_message.lower() == 'git commit count':
+        
+        return 'counted'
+
+    if user_message.lower() == 'git students':        #complete
+
+        list = [s.name for s in student_list if student_list]
+
+        return list        
+
+    else:
+
+        return f'invalid command'
+
+
+
