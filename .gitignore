@@ -28,3 +28,4 @@ ds_store
 .ds_store
 ds_store/
 /ds_store
+.gitcount/__pycache__
