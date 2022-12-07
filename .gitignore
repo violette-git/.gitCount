@@ -22,7 +22,7 @@ foodtruck.help.crt
 __pycache__
 __pycache__/
 /__pycache__
-.__pycache__
+./__pycache__
 .pyc
 ds_store
 .ds_store
