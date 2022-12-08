@@ -29,7 +29,10 @@ class Student:
 
 
 
-student_list = []
+student_list = {}
+student_list = set()
+print(type(student_list))
+
 def get_response(message: str, user_message:str) -> str | str:
 
     embeds = message.embeds
@@ -50,28 +53,43 @@ def get_response(message: str, user_message:str) -> str | str:
         before = groups[0]
 
         title = groups[1]
-        print(title)
+        # print(title)
         author = embed.author.name
+
+        print(author)
 
         
         if len(student_list) == 0:
 
-            student = Student(author)
+            student = Student(str(author))
 
-            student_list.append(student)
+            student_list.add(student)
 
-        for s in student_list:
+            return f'{author} was added to the list of students'
 
-            if author != s.name:
+        if len(student_list) > 0:
 
-                student = Student(author)
+            print(f'{author}')
 
-                student_list.append(student)
+            for s in student_list:
+
+                list = [s.name for s in student_list if len(student_list) > 0]
+
+                if str(author) not in list:
+
+                    print(f'{author}')
+
+                    student = Student(str(author))
                 
-                # print(s.)
+                    student_list.add(student)
             
-                return f'{s.name} was added to the list of students'
-            
+                    return f'{author} was added to the list of students'
+                    # print(student_list)
+                    # print(author)
+
+                else:
+                    return 'calculating...'            
+
 
         if title.startswith('New comment on pull request '):
 
@@ -85,10 +103,8 @@ def get_response(message: str, user_message:str) -> str | str:
 
                         s.parse_comments(before)
             
-                        print(s.comment)
-            return f'{s.name}: {t.day} {t.month} {t.year}'
-            
-            #     return f'{t}'
+                        # print(s.comment for s in student_list if student_list)
+                        return f'{s.name}: {t.day} {t.month} {t.year}'
 
         if title.startswith('Pull request opened:'):
 
@@ -96,13 +112,13 @@ def get_response(message: str, user_message:str) -> str | str:
 
             return pull
 
-        if title.startswith('1 new commit:'):
+        elif title.startswith('1 new commit:'):
             
             if author:
 
                 t = dt.datetime.now()
 
-                
+
 
             pull = 'pull added' 
 
@@ -114,13 +130,15 @@ def get_response(message: str, user_message:str) -> str | str:
 
         return push
 
-    if user_message.lower() == 'git commit count':
+    elif user_message.lower() == 'git commit count':
         
         return 'counted'
 
-    if user_message.lower() == 'git students':        #complete
+    elif user_message.lower() == 'git students':        #complete
 
-        list = [s.name for s in student_list if student_list]
+        list = [s.name for s in student_list if len(student_list) > 0]
+
+        print(list)
 
         return list        
 
