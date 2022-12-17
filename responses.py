@@ -7,25 +7,39 @@ class Student:
     def __init__(self, name):
 
         self.name = name
-        self.comment = 0
         self.commit = 0
-        self.pull = 0
-    
-    def parse_comments(self, comment):
+        self.timestamp = ''
+        self.student_list = {}
+        self.student_list = set()
 
-        self.comment = comment
-    
-    def parse_pulls(self, pull):
+    def parse_commits(self, commit, time):
 
-        self.pull = pull
+        self.commit = self.commit + commit
 
-    def parse_commits(self, commit):
+        self.timestamp = time
 
-        self.commit = commit
+        return f'{self.name} made {self.commit} commit(s) @ {self.timestamp}'
 
     def __str__(self):
 
         return f'{self.name}'
+
+class StudentList:
+
+    def __init__(self):
+
+        self.student_list = {}
+        self.student_list = set()
+
+    def add_students(self, student):
+
+        self.student_list.add(student)
+
+        return f'{student} was added to list of students'
+
+    def __str__(self):
+
+        return f'{self.student_list}'
 
 
 
@@ -35,12 +49,16 @@ print(type(student_list))
 
 def get_response(message: str, user_message:str) -> str | str:
 
+    # student_list = StudentList()
+
     embeds = message.embeds
     # print(embeds)
     # print(dir(embeds))
     for embed in embeds:        
         # print(embed)
         title = embed.title
+
+        user_message = user_message
       
         n = 1
 
@@ -57,90 +75,83 @@ def get_response(message: str, user_message:str) -> str | str:
         author = embed.author.name
 
         print(author)
+        print(student_list)
 
         
         if len(student_list) == 0:
-
+            print('level 1')
             student = Student(str(author))
 
+
+
             student_list.add(student)
+
+            numbers = title.split(' new ')
+
+            commits = int(numbers[0])
+
+            student.commit = student.commit + commits
+
+            print(student.commit)
+
+            t = dt.datetime.now()
+
+            # student.parse_commits(commits, t)
+
+            student_t = StudentList()
+
+            student_t.add_students(student)
+
+            print(student_t.student_list)
 
             return f'{author} was added to the list of students'
 
         if len(student_list) > 0:
 
+            print('level 2')
+
             print(f'{author}')
 
-            for s in student_list:
+            list = [s.name for s in student_list if len(student_list) > 0]
 
-                list = [s.name for s in student_list if len(student_list) > 0]
+            if str(author) not in list:
 
-                if str(author) not in list:
+                print(f'{author}')
 
-                    print(f'{author}')
-
-                    student = Student(str(author))
-                
-                    student_list.add(student)
+                student = Student(str(author))
             
-                    return f'{author} was added to the list of students'
-                    # print(student_list)
-                    # print(author)
+                student_list.add(student)
 
-                else:
-                    return 'calculating...'            
+                numbers = title.split(' new ')
 
+                commits = int(numbers[0])
 
-        if title.startswith('New comment on pull request '):
+                # student.commit = student.commit + commits
 
-            if author:
+                print(student.commit)
 
                 t = dt.datetime.now()
 
-                for s in student_list:
+                # student.parse_commits(commits, t)
 
-                    if author == s.name:
+                # student_t = StudentList()
 
-                        s.parse_comments(before)
-            
-                        # print(s.comment for s in student_list if student_list)
-                        return f'{s.name}: {t.day} {t.month} {t.year}'
+                # student_t.add_students(student)
 
-        if title.startswith('Pull request opened:'):
-
-            pull = 'pull added' 
-
-            return pull
-
-        elif title.startswith('1 new commit:'):
-            
-            if author:
-
-                t = dt.datetime.now()
-
-
-
-            pull = 'pull added' 
-
-            return pull    
-    
-    if user_message.lower() == 'git push count':
-
-        push = 'push got'
-
-        return push
-
-    elif user_message.lower() == 'git commit count':
+                print(student_t.student_list)
         
-        return 'counted'
+                return f'{author} was added to the list of students'
+                # print(student_list)
+                # print(author)
 
-    elif user_message.lower() == 'git students':        #complete
+            else:
+                return 'calculating...'
 
-        list = [s.name for s in student_list if len(student_list) > 0]
+    if user_message.lower() == 'git commits':
 
-        print(list)
-
-        return list        
+        list = [(s.commit, s.name) for s in student_list if len(student_list) > 0]
+                
+        return f'{list}'      
 
     else:
 
